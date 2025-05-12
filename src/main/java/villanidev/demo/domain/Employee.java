@@ -38,16 +38,10 @@ public class Employee {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    /* owner of the relationship (bidirectional) */
-    @ManyToMany
-    @JoinTable(
-            name = "enrolment",
-            joinColumns = { @JoinColumn(name = "employee_id") },
-            inverseJoinColumns = { @JoinColumn(name = "training_id") }
-    )
+    /* turns into a one to many */
+    @OneToMany(mappedBy = "employee")
     @Builder.Default
-    @Setter(value = AccessLevel.NONE)
-    private Set<Training> trainings = new HashSet<>();
+    private Set<TrainingReview> trainingReviews = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp(source = SourceType.DB)
@@ -59,14 +53,25 @@ public class Employee {
     private LocalDateTime updatedAt;
 
     /* Link the Many-to-Many relationship to maintain consistency */
-    public void addTraining(final Training training) {
-        this.trainings.add(training);
-        training.getEmployees().add(this);
+    public void addTrainingReview(final Training training) {
+        TrainingReview trainingReview = new TrainingReview(this, training);
+        trainingReviews.add(trainingReview);
+        training.getTrainingReviews().add(trainingReview);
     }
 
-    public void removeTraining(final Training training) {
-        this.trainings.remove(training);
-        training.getEmployees().remove(this);
-    }
+    public void removeTrainingReview(final Training training) {
+        for (TrainingReview trainingReview : this.trainingReviews) {
 
+            if (trainingReview.getEmployee().equals(this)
+                    && trainingReview.getTraining().equals(training)) {
+
+                trainingReview.getEmployee().getTrainingReviews().remove(trainingReview);
+                trainingReview.getTraining().getTrainingReviews().remove(trainingReview);
+
+                trainingReview.setEmployee(null);
+                trainingReview.setTraining(null);
+                break;
+            }
+        }
+    }
 }

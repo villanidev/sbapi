@@ -29,10 +29,10 @@ public class Training {
 
     private Boolean mandatory;
 
-    @ManyToMany(mappedBy = "trainings")
+    /* turns into a one to many */
+    @OneToMany(mappedBy = "training")
     @Builder.Default
-    @Setter(value = AccessLevel.NONE)
-    private Set<Employee> employees = new HashSet<>();
+    private Set<TrainingReview> trainingReviews = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp(source = SourceType.DB)
