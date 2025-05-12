@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - postgresdb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:5432/hr_trainings
+      - SPRING_DATASOURCE_USERNAME=appuser
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JAVA_TOOL_OPTIONS=
+          -Xms512m 
+          -Xmx512m 
+          -XX:MinRAMPercentage=20.0 
+          -XX:MaxRAMPercentage=75.0
+          -XX:+UseZGC 
+          -XX:+ZGenerational
+    ports:
+      - "8080:8080"
+  postgresdb:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: hr_trainings
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
