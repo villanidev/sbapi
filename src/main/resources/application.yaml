@@ -13,7 +13,7 @@ spring:
       hibernate:
         format_sql: true
         #https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#configurations-hbmddl
-        ddl-auto: update # (create | create-drop | update | validate | none)
+        ddl-auto: create-drop # (create | create-drop | update | validate | none)
         jdbc:
           time_zone: UTC
 
